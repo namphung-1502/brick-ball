@@ -37,12 +37,8 @@ function collisionDetection() {
     for (var c = 0; c < columnBrick; c++) {
         for (var r = 0; r < rowBrick; r++) {
             let obj = brickObject[c][r];
-            console.log(ball.x)
-            console.log(ball.y)
-            console.log(obj.brickX)
-            console.log(obj.brickY)
             if (obj.isLive) {
-                if (ball.x > obj.brickX && ball.x < obj.brickX + obj.width && ball.y > obj.brickY && ball.y < obj.y + obj.height) {
+                if (ball.x > obj.brickX && ball.x < obj.brickX + obj.width && ball.y > obj.brickY && ball.y < obj.brickY + obj.height) {
                     ball.vy = -ball.vy;
                     obj.setHide();
                 }
@@ -69,9 +65,6 @@ function createBricks() {
         }
     }
 
-    // while (brickObject.length) {
-    //     brickObject2d.push(brickObject.splice(0, 3))
-    // }
 }
 
 function keyDownHandle(e) {
