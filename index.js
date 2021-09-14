@@ -2,8 +2,6 @@
 let canvas;
 let ctx;
 let ball;
-let secondsPassed = 0;
-let oldTimeStamp = 0;
 const canvasWidth = 900;
 const canvasHeight = 500;
 const restitution = 0.5;
@@ -15,9 +13,17 @@ var leftPressed = false;
 const active = true;
 let bricksObject = [];
 let rowBrick = 3;
-let columnBrick = 5;
+let columnBrick = 7;
 let brickObject = [];
-let brickObject2d = []
+let brickObject2d = [];
+
+let fps = 0;
+let framesThisSecond = 0;
+let lastFpsUpdate = 0;
+let maxFPS = 75;
+let timeStep = 1 / maxFPS;
+let delta = 0;
+let oldTimeStamp = 0;
 
 window.onload = init;
 
@@ -60,7 +66,6 @@ function createBricks() {
     for (var c = 0; c < columnBrick; c++) {
         brickObject[c] = [];
         for (var r = 0; r < rowBrick; r++) {
-            // brickObject.push(new Brick(ctx, c, r))
             brickObject[c][r] = new Brick(ctx, c, r)
         }
     }
@@ -109,19 +114,30 @@ function movePaddle() {
 
 function gameLoop(timeStamp) {
     if (active) {
-        secondsPassed = (timeStamp - oldTimeStamp) / 1000;
+        if (timeStamp < (oldTimeStamp + (1000 / maxFPS))) {
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+        delta += (timeStamp - oldTimeStamp) / 1000;
         oldTimeStamp = timeStamp;
-        ball.update(secondsPassed);
-        detectEdgeCollisions()
-        collisionDetection()
-        ball.clearCanvas();
-        ball.draw();
-        drawPaddle()
-        movePaddle()
-        drawBricks()
-        window.requestAnimationFrame(gameLoop);
+        while (delta >= timeStep) {
+            update(timeStep);
+            delta -= timeStep;
+        }
+        requestAnimationFrame(gameLoop)
     }
 
+}
+
+function update(time) {
+    ball.update(time);
+    detectEdgeCollisions()
+    collisionDetection()
+    ball.clearCanvas();
+    ball.draw();
+    drawPaddle()
+    movePaddle()
+    drawBricks()
 }
 
 function detectEdgeCollisions() {
