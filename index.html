@@ -19,11 +19,68 @@
             left: 0;
             right: 0;
         }
+        
+        #decre-fps {
+            position: absolute;
+            float: right;
+            top: 50%;
+            right: 15%;
+            padding: 5px 10px;
+            background: #ff0000;
+            border: 1px solid white;
+            outline: none;
+            color: #fff;
+            font-size: 15px;
+        }
+        
+        #incre-fps {
+            position: absolute;
+            float: right;
+            top: 50%;
+            right: 10%;
+            padding: 5px 10px;
+            background: #007fff;
+            border: 1px solid white;
+            outline: none;
+            color: #fff;
+            font-size: 15px;
+        }
+        
+        #decre-speed {
+            position: absolute;
+            float: right;
+            top: 50%;
+            left: 10%;
+            padding: 5px 10px;
+            background: #ff0000;
+            border: 1px solid white;
+            outline: none;
+            color: #fff;
+            font-size: 15px;
+        }
+        
+        #incre-speed {
+            position: absolute;
+            float: right;
+            top: 50%;
+            left: 15%;
+            padding: 5px 10px;
+            background: #007fff;
+            border: 1px solid white;
+            outline: none;
+            color: #fff;
+            font-size: 15px;
+        }
     </style>
 </head>
 
 <body>
     <canvas id="myCanvas" width="900" height="500"></canvas>
+
+    <button id="decre-fps">- FPS</button>
+    <button id="incre-fps">+ FPS</button>
+    <button id="incre-speed">+ Speed</button>
+    <button id="decre-speed">- Speed</button>
     <script src="./index.js"></script>
 </body>
 

@@ -16,14 +16,18 @@ let rowBrick = 3;
 let columnBrick = 7;
 let brickObject = [];
 let brickObject2d = [];
+let speed = 1;
 
-let fps = 0;
-let framesThisSecond = 0;
-let lastFpsUpdate = 0;
 let maxFPS = 75;
 let timeStep = 1 / maxFPS;
 let delta = 0;
 let oldTimeStamp = 0;
+let fps = 0;
+let secondsPassed = 0;
+
+let framesThisSecond = 0;
+let lastFpsUpdate = 0;
+
 
 window.onload = init;
 
@@ -90,6 +94,7 @@ function keyUpHandle(e) {
 
 }
 
+
 function drawPaddle() {
     ctx.beginPath()
     ctx.rect(paddleX, canvasHeight - paddleHeight - 5, paddleWidth, paddleHeight);
@@ -113,6 +118,8 @@ function movePaddle() {
 }
 
 function gameLoop(timeStamp) {
+
+
     if (active) {
         if (timeStamp < (oldTimeStamp + (1000 / maxFPS))) {
             requestAnimationFrame(gameLoop);
@@ -124,8 +131,18 @@ function gameLoop(timeStamp) {
             update(timeStep);
             delta -= timeStep;
         }
+
+        if (timeStamp > lastFpsUpdate + 1000) {
+            fps = 0.25 * framesThisSecond + (1 - 0.25) * fps;
+            lastFpsUpdate = timeStamp;
+            framesThisSecond = 0;
+        }
+        framesThisSecond++;
+
+
         requestAnimationFrame(gameLoop)
     }
+
 
 }
 
@@ -156,7 +173,7 @@ function detectEdgeCollisions() {
         ball.vy = -ball.vy;
         ball.y = ball.rad;
     } else if (ball.y > canvasHeight - ball.rad - paddleHeight - 5) {
-        if (ball.x > paddleX && ball.x < paddleX + paddleWidth + (ball.rad / 2)) {
+        if (ball.x > paddleX - (ball.rad / 2) && ball.x < paddleX + paddleWidth + (ball.rad / 2)) {
             ball.vy = -ball.vy;
         } else {
             alert("GAME OVER");
@@ -166,7 +183,7 @@ function detectEdgeCollisions() {
     }
 }
 class Brick {
-    constructor(context, x, y, padding = 10, width = 100, height = 50, setTop = 30, setLeft = 30, isLive = true) {
+    constructor(context, x, y, padding = 10, width = 100, height = 50, setTop = 50, setLeft = 30, isLive = true) {
         this.context = context;
         this.x = x;
         this.y = y;
@@ -188,6 +205,10 @@ class Brick {
             this.context.closePath();
 
         }
+
+        this.context.fillStyle = 'black';
+        this.context.font = '25px Time New Roman';
+        this.context.fillText("FPS: " + Math.round(fps), 800, 30);
     }
     setHide() {
         this.isLive = false;
@@ -220,10 +241,41 @@ class Ball extends GameObject {
         this.context.fill();
     }
     update(secondsPassed) {
-        this.x += this.vx * secondsPassed;
-        this.y += this.vy * secondsPassed;
+        this.x += this.vx * secondsPassed * speed;
+        this.y += this.vy * secondsPassed * speed;
     }
     clearCanvas() {
         this.context.clearRect(0, 0, canvas.width, canvas.height);
     }
 }
+
+document.getElementById("decre-fps").addEventListener("click", () => {
+    if (maxFPS > 10) {
+        maxFPS -= 5;
+    } else {
+        console.log("Min FPS is 10")
+    }
+})
+document.getElementById("incre-fps").addEventListener("click", () => {
+    if (maxFPS < 200) {
+        fps += 5;
+    } else {
+        console.log("Max FPS is 200")
+    }
+})
+
+document.getElementById("incre-speed").addEventListener("click", () => {
+    if (speed < 4) {
+        speed += 0.5;
+    } else {
+        console.log("Max level")
+    }
+});
+
+document.getElementById("decre-speed").addEventListener("click", () => {
+    if (speed > 1) {
+        speed -= 0.5;
+    } else {
+        console.log("Min level")
+    }
+})
